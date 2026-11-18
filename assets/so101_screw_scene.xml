@@ -1,0 +1,143 @@
+<mujoco model="so101_screw_scene">
+  <compiler angle="radian" autolimits="true"/>
+  <option timestep="0.002" gravity="0 0 -9.81" integrator="implicitfast"/>
+
+  <visual>
+    <headlight ambient="0.25 0.25 0.25" diffuse="0.3 0.3 0.3" specular="0.1 0.1 0.1"/>
+    <quality shadowsize="2048"/>
+  </visual>
+
+  <asset>
+    <material name="wood_mat" rgba="0.82 0.78 0.70 1.0" specular="0.2" shininess="0.1"/>
+    <material name="arm_body_mat" rgba="0.25 0.28 0.32 1.0" specular="0.5" shininess="0.4"/>
+    <material name="arm_accent_mat" rgba="0.95 0.45 0.1 1.0" specular="0.4" shininess="0.3"/>
+    <material name="gripper_pad_mat" rgba="0.15 0.15 0.15 1.0" specular="0.1"/>
+    <material name="screw_steel_mat" rgba="0.88 0.88 0.92 1.0" specular="0.9" shininess="0.8"/>
+    <material name="cup_paper_mat" rgba="0.95 0.95 0.98 0.9" specular="0.2" shininess="0.1"/>
+    <material name="nut_mat" rgba="0.45 0.48 0.52 1.0" specular="0.6" shininess="0.5"/>
+    <material name="coin_mat" rgba="0.85 0.68 0.22 1.0" specular="0.8" shininess="0.7"/>
+  </asset>
+
+  <worldbody>
+    <!-- Lighting: main overhead light and secondary side lamp -->
+    <light name="main_light" pos="0.20 0.0 1.2" dir="0 0 -1" diffuse="0.85 0.85 0.85" specular="0.3 0.3 0.3" castshadow="true"/>
+    <light name="side_light" pos="-0.25 -0.45 0.40" dir="0.55 0.85 -0.35" diffuse="0.0 0.0 0.0" specular="0.0 0.0 0.0" castshadow="true"/>
+
+    <!-- Reference site at desk center -->
+    <site name="desk_center" pos="0.20 0.0 0.0" size="0.005" rgba="1 0 0 0"/>
+
+    <!-- Fixed overhead/angled camera: Logitech C270 style, 27 cm in front, 640x480 -->
+    <camera name="c270_overhead" pos="0.28 -0.27 0.42" fovy="52" mode="targetbody" target="desk_target_body"/>
+    <camera name="top_cam" pos="0.20 0.0 0.55" fovy="50" mode="targetbody" target="desk_target_body"/>
+
+    <body name="desk_target_body" pos="0.20 0.0 0.0"/>
+
+    <!-- Desk / Table surface (z=0 is tabletop surface) -->
+    <geom name="table_geom" type="box" size="0.45 0.45 0.025" pos="0.18 0.0 -0.025" material="wood_mat" friction="1.0 0.01 0.001"/>
+
+    <!-- Target Paper Cup: opening diameter 7.5cm (r=0.0375), height 7.8cm (0.078) at (0.15, 0.18) -->
+    <body name="paper_cup" pos="0.15 0.18 0.0">
+      <geom name="cup_bottom" type="cylinder" size="0.036 0.002" pos="0 0 0.002" material="cup_paper_mat"/>
+      <site name="cup_target_site" pos="0 0 0.04" size="0.035 0.038" type="cylinder" rgba="0 1 0 0"/>
+      <!-- Hollow cup wall segments (16 capsules forming the cylindrical perimeter) -->
+      <geom type="capsule" fromto="0.0375 0.0 0.002 0.0375 0.0 0.078" size="0.0035" material="cup_paper_mat"/>
+      <geom type="capsule" fromto="0.0346 0.0143 0.002 0.0346 0.0143 0.078" size="0.0035" material="cup_paper_mat"/>
+      <geom type="capsule" fromto="0.0265 0.0265 0.002 0.0265 0.0265 0.078" size="0.0035" material="cup_paper_mat"/>
+      <geom type="capsule" fromto="0.0143 0.0346 0.002 0.0143 0.0346 0.078" size="0.0035" material="cup_paper_mat"/>
+      <geom type="capsule" fromto="0.0 0.0375 0.002 0.0 0.0375 0.078" size="0.0035" material="cup_paper_mat"/>
+      <geom type="capsule" fromto="-0.0143 0.0346 0.002 -0.0143 0.0346 0.078" size="0.0035" material="cup_paper_mat"/>
+      <geom type="capsule" fromto="-0.0265 0.0265 0.002 -0.0265 0.0265 0.078" size="0.0035" material="cup_paper_mat"/>
+      <geom type="capsule" fromto="-0.0346 0.0143 0.002 -0.0346 0.0143 0.078" size="0.0035" material="cup_paper_mat"/>
+      <geom type="capsule" fromto="-0.0375 0.0 0.002 -0.0375 0.0 0.078" size="0.0035" material="cup_paper_mat"/>
+      <geom type="capsule" fromto="-0.0346 -0.0143 0.002 -0.0346 -0.0143 0.078" size="0.0035" material="cup_paper_mat"/>
+      <geom type="capsule" fromto="-0.0265 -0.0265 0.002 -0.0265 -0.0265 0.078" size="0.0035" material="cup_paper_mat"/>
+      <geom type="capsule" fromto="-0.0143 -0.0346 0.002 -0.0143 -0.0346 0.078" size="0.0035" material="cup_paper_mat"/>
+      <geom type="capsule" fromto="0.0 -0.0375 0.002 0.0 -0.0375 0.078" size="0.0035" material="cup_paper_mat"/>
+      <geom type="capsule" fromto="0.0143 -0.0346 0.002 0.0143 -0.0346 0.078" size="0.0035" material="cup_paper_mat"/>
+      <geom type="capsule" fromto="0.0265 -0.0265 0.002 0.0265 -0.0265 0.078" size="0.0035" material="cup_paper_mat"/>
+      <geom type="capsule" fromto="0.0346 -0.0143 0.002 0.0346 -0.0143 0.078" size="0.0035" material="cup_paper_mat"/>
+    </body>
+
+    <!-- M6x10 Silver Screw (Thread: diam 6mm, len 10mm; Head: diam 10mm, len 4mm) -->
+    <body name="m6_screw" pos="0.20 0.0 0.006">
+      <freejoint name="screw_joint"/>
+      <geom name="screw_shaft" type="cylinder" size="0.003 0.005" pos="0 0 0" material="screw_steel_mat" density="7800" friction="1.2 0.01 0.001"/>
+      <geom name="screw_head" type="cylinder" size="0.005 0.002" pos="0 0 0.005" material="screw_steel_mat" density="7800" friction="1.2 0.01 0.001"/>
+      <site name="screw_site" pos="0 0 0.002" size="0.004" rgba="1 1 0 0"/>
+    </body>
+
+    <!-- Clutter objects for Domain Randomization: nut and coin -->
+    <body name="clutter_nut" pos="0.22 0.05 0.004">
+      <freejoint name="nut_joint"/>
+      <geom name="nut_geom" type="cylinder" size="0.006 0.003" material="nut_mat" density="7800" friction="1.0 0.01 0.001"/>
+    </body>
+    <body name="clutter_coin" pos="0.17 0.04 0.0015">
+      <freejoint name="coin_joint"/>
+      <geom name="coin_geom" type="cylinder" size="0.012 0.0015" material="coin_mat" density="8500" friction="0.8 0.01 0.001"/>
+    </body>
+
+    <!-- SO-101 6-DOF Robot Arm -->
+    <body name="so101_base" pos="0 0 0">
+      <geom name="base_geom" type="cylinder" size="0.045 0.015" pos="0 0 0.015" material="arm_body_mat"/>
+      <geom name="base_pillar" type="cylinder" size="0.035 0.015" pos="0 0 0.045" material="arm_body_mat"/>
+
+      <!-- Joint 1: Base Yaw / Shoulder Pan (around Z) -->
+      <body name="shoulder_bracket" pos="0 0 0.060">
+        <joint name="joint_1" type="hinge" axis="0 0 1" range="-1.92 1.92" damping="0.5"/>
+        <geom name="shoulder_geom" type="box" size="0.030 0.025 0.02" pos="0 0 0.01" material="arm_accent_mat"/>
+
+        <!-- Joint 2: Shoulder Pitch (around Y) -->
+        <body name="upper_arm" pos="0 0 0.025">
+          <joint name="joint_2" type="hinge" axis="0 1 0" range="-1.85 1.85" damping="0.8"/>
+          <geom name="upper_arm_geom" type="capsule" fromto="0 0 0 0 0 0.125" size="0.018" material="arm_body_mat"/>
+
+          <!-- Joint 3: Elbow Pitch (around Y) -->
+          <body name="forearm" pos="0 0 0.125">
+            <joint name="joint_3" type="hinge" axis="0 1 0" range="-2.1 2.1" damping="0.6"/>
+            <geom name="forearm_geom" type="capsule" fromto="0 0 0 0 0 0.125" size="0.016" material="arm_body_mat"/>
+
+            <!-- Joint 4: Wrist Pitch (around Y) -->
+            <body name="wrist_pitch_link" pos="0 0 0.125">
+              <joint name="joint_4" type="hinge" axis="0 1 0" range="-1.85 1.85" damping="0.4"/>
+              <geom name="wrist_pitch_geom" type="box" size="0.016 0.016 0.018" pos="0 0 0.018" material="arm_accent_mat"/>
+
+              <!-- Joint 5: Wrist Roll (around Z) -->
+              <body name="wrist_roll_link" pos="0 0 0.036">
+                <joint name="joint_5" type="hinge" axis="0 0 1" range="-3.14 3.14" damping="0.3"/>
+                <geom name="gripper_base" type="box" size="0.018 0.024 0.010" pos="0 0 0.010" material="arm_body_mat"/>
+                <site name="gripper_site" pos="0 0 0.035" size="0.004" rgba="0 1 1 0"/>
+
+                <!-- Gripper finger left (slides along -Y) -->
+                <body name="left_finger" pos="0 0.016 0.018">
+                  <joint name="gripper_left" type="slide" axis="0 -1 0" range="0 0.016" damping="1.0"/>
+                  <geom name="left_finger_geom" type="box" size="0.007 0.0025 0.016" pos="0 -0.001 0.012" material="gripper_pad_mat"/>
+                </body>
+
+                <!-- Gripper finger right (slides along +Y) -->
+                <body name="right_finger" pos="0 -0.016 0.018">
+                  <joint name="gripper_right" type="slide" axis="0 1 0" range="0 0.016" damping="1.0"/>
+                  <geom name="right_finger_geom" type="box" size="0.007 0.0025 0.016" pos="0 0.001 0.012" material="gripper_pad_mat"/>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+  <!-- Couple right finger to left finger so one actuator closes both fingers symmetrically -->
+  <equality>
+    <joint joint1="gripper_left" joint2="gripper_right" polycoef="0 1 0 0 0"/>
+  </equality>
+
+  <!-- Actuators: 5 arm joints + 1 gripper slide actuator -->
+  <actuator>
+    <position name="act_joint_1" joint="joint_1" kp="50" kv="6" ctrlrange="-1.92 1.92"/>
+    <position name="act_joint_2" joint="joint_2" kp="70" kv="8" ctrlrange="-1.85 1.85"/>
+    <position name="act_joint_3" joint="joint_3" kp="60" kv="7" ctrlrange="-2.1 2.1"/>
+    <position name="act_joint_4" joint="joint_4" kp="45" kv="5" ctrlrange="-1.85 1.85"/>
+    <position name="act_joint_5" joint="joint_5" kp="30" kv="4" ctrlrange="-3.14 3.14"/>
+    <position name="act_gripper" joint="gripper_left" kp="80" kv="8" ctrlrange="0 0.016"/>
+  </actuator>
+</mujoco>
